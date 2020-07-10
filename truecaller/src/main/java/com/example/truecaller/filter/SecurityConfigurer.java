@@ -1,4 +1,4 @@
-package com.example.truecaller.config;
+package com.example.truecaller.filter;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -12,7 +12,6 @@ import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import com.example.truecaller.filter.JwtRequestFilter;
 import com.example.truecaller.service.MyUserDetailsService;
 
 @EnableWebSecurity
