@@ -25,6 +25,6 @@ public interface UserContactEntityConstant {
 
 	interface Query {
 		String FIND_ALL_BY_CONTACT_USER_ID = "select uce from UserContactEntity uce where uce.contactUserId = :contactId and uce.flag = 1";
-		String FIND_USER_IN_CONTACT = "select uce from UserContactEntity uce where uce.userId = :userId and uce.contactUserId = :contactId and uce.flag = 1";
+		String FIND_USER_IN_CONTACT = "select uce from UserContactEntity uce where uce.userId = :userId and uce.contactUserId = :contactId and uce.isContact = 1 and uce.flag = 1";
 	}
 }

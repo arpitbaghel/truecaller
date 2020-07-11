@@ -132,7 +132,7 @@ public class UserServiceImpl implements UserService {
 		UserEntity loggedInUser = getAuthUserDetails();
 		Long loggedInUserId = loggedInUser.getId();
 		if (userBean != null) {
-			UserContactEntity userContact = userContactService.findIfUserIsInContact(loggedInUserId, userBean.getId());
+			UserContactEntity userContact = userContactService.findIfUserIsInContact(userBean.getId(), loggedInUserId);
 			if (userBean.getIsRegistered().equals(0) || userContact == null) {
 				userBean.setEmail(null);
 			}
