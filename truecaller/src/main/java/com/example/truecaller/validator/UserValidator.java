@@ -11,17 +11,17 @@ import com.example.truecaller.service.UserService;
 public class UserValidator {
 
 	@Autowired
-	private UserService service;
+	private UserService userService;
 
 	public void validateOnSave(UserSignupRequestBean bean, Errors errors) {
 		if (!errors.hasErrors()) {
 			if (bean.getUsername() == null || bean.getPassword() == null || bean.getMobile() == null || bean.getName() == null) {
 				errors.reject("Mandatory Fields Missing");
 			}
-			if (service.findUserByUsername(bean.getUsername()) != null) {
+			if (userService.findUserByUsername(bean.getUsername()) != null) {
 				errors.reject("Username Already Taken");
 			}
-			if (service.findRegisteredUserByMobile(bean.getMobile()) != null) {
+			if (userService.findRegisteredUserByMobile(bean.getMobile()) != null) {
 				errors.reject("Mobile No Already Registered");
 			}
 		}

@@ -37,7 +37,7 @@ public class UserController {
 	private UserService userService;
 
 	@Autowired
-	private UserValidator validator;
+	private UserValidator userValidator;
 
 	@Autowired
 	private AuthenticationManager authenticationManager;
@@ -63,7 +63,7 @@ public class UserController {
 
 	@PostMapping("/signup")
 	public Long signUp(@RequestBody @Valid UserSignupRequestBean request, Errors errors) {
-		validator.validateOnSave(request, errors);
+		userValidator.validateOnSave(request, errors);
 		if (errors.hasErrors()) {
 			throw new ValidationException((Throwable) errors.getAllErrors());
 		}
@@ -74,7 +74,7 @@ public class UserController {
 
 	@PutMapping("/user/mark-spam")
 	public void markSpam(@RequestBody @Valid SpamMarkBean spam, Errors errors) {
-		validator.validateOnSpamMark(spam.getMobile(), errors);
+		userValidator.validateOnSpamMark(spam.getMobile(), errors);
 		if (errors.hasErrors()) {
 			throw new ValidationException((Throwable) errors.getAllErrors());
 		}
