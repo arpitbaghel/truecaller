@@ -44,7 +44,7 @@ public class UserEntity implements Serializable, UserEntityConstant {
 	private Long spams;
 
 	@Column(name = UserEntityConstant.FLAG)
-	private Integer flag;
+	private Integer flag = 1;
 
 	public Long getId() {
 		return id;
@@ -116,5 +116,9 @@ public class UserEntity implements Serializable, UserEntityConstant {
 
 	public void setPassword(String password) {
 		this.password = password;
+	}
+
+	public static UserEntity newInstance() {
+		return new UserEntity();
 	}
 }

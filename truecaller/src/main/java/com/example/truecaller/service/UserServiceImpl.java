@@ -23,7 +23,7 @@ import com.example.truecaller.repository.UserRepository;
 public class UserServiceImpl implements UserService {
 
 	@Autowired
-	private UserRepository repository;
+	private UserRepository userRepository;
 
 	@Autowired
 	private UserService userService;
@@ -36,37 +36,41 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public UserEntity registerUser(UserEntity entity) {
-		return repository.save(entity);
+		UserEntity userEntity = userRepository.findUserByMobileNumber(entity.getMobile());
+		if (userEntity != null) {
+			entity.setId(userEntity.getId());
+		}
+		return userRepository.save(entity);
 	}
 
 	@Override
 	public UserEntity update(UserEntity entity) {
-		return repository.save(entity);
+		return userRepository.save(entity);
 	}
 
 	@Override
 	public UserEntity findUserByUsername(String username) {
-		return repository.findRegisteredUserByUsername(username);
+		return userRepository.findRegisteredUserByUsername(username);
 	}
 
 	@Override
 	public UserEntity findRegisteredUserByMobile(String mobile) {
-		return repository.findRegisteredUserByMobileNumber(mobile);
+		return userRepository.findRegisteredUserByMobileNumber(mobile);
 	}
 
 	@Override
 	public UserEntity findUserByMobile(String mobile) {
-		return repository.findUserByMobileNumber(mobile);
+		return userRepository.findUserByMobileNumber(mobile);
 	}
 
 	@Override
 	public List<UserBean> search(String name, String mobile) {
 		List<UserBean> userBean = new ArrayList<>();
 		if (name != null) {
-			List<UserEntity> userNames = userService.autocompleteByName(name);
+			List<UserEntity> userNames = autocompleteByName(name);
 			convertUserEntityToBeanList(userBean, userNames);
 		} else if (mobile != null) {
-			UserEntity user = repository.findUserByMobileNumber(mobile);
+			UserEntity user = userRepository.findUserByMobileNumber(mobile);
 			if (user != null) {
 				if (user.getIsRegistered().equals(1)) {
 					UserBean bean = new UserBean();
@@ -88,22 +92,22 @@ public class UserServiceImpl implements UserService {
 		} catch (UnsupportedEncodingException e) {
 			e.printStackTrace();
 		}
-		final List<UserEntity> exactNameList = repository.searchExactNames(name.concat("%"));
-		final List<UserEntity> matchNameList = repository.searchMatchedNames(name.concat("%"), "%".concat(name).concat("%"));
+		final List<UserEntity> exactNameList = userRepository.searchExactNames(name.concat("%"));
+		final List<UserEntity> matchNameList = userRepository.searchMatchedNames(name.concat("%"), "%".concat(name).concat("%"));
 		exactNameList.addAll(matchNameList);
 		return exactNameList;
 	}
 
 	@Override
 	public void markSpam(String mobile) {
-		UserEntity userEntity = repository.findUserByMobileNumber(mobile);
+		UserEntity userEntity = userRepository.findUserByMobileNumber(mobile);
 		UserEntity loggedInUser = getAuthUserDetails();
 		UserContactEntity contact = new UserContactEntity();
 		if (userEntity != null) {
 			Long spams = userEntity.getSpams();
 			spams++;
 			userEntity.setSpams(spams);
-			repository.save(userEntity);
+			userRepository.save(userEntity);
 			contact.setContactUserId(userEntity.getId());
 			contact.setContactName(userEntity.getName());
 		} else {
@@ -111,7 +115,7 @@ public class UserServiceImpl implements UserService {
 			spamUser.setMobile(mobile);
 			spamUser.setIsRegistered(UserEntityConstant.RegisteredUser.NOT_REGISTERED_USER);
 			spamUser.setSpams(UserEntityConstant.SpamedUser.SPAMED_USER);
-			UserEntity spammedUser = repository.save(spamUser);
+			UserEntity spammedUser = userRepository.save(spamUser);
 			contact.setContactUserId(spammedUser.getId());
 		}
 		contact.setIsContact(UserContactEntityConstant.Contact.NOT_CONTACT);
@@ -128,7 +132,7 @@ public class UserServiceImpl implements UserService {
 		UserEntity loggedInUser = getAuthUserDetails();
 		Long loggedInUserId = loggedInUser.getId();
 		if (userBean != null) {
-			UserContactEntity userContact = userContactService.findIfUserIsInContact(userBean.getId(), loggedInUserId);
+			UserContactEntity userContact = userContactService.findIfUserIsInContact(loggedInUserId, userBean.getId());
 			if (userBean.getIsRegistered().equals(0) || userContact == null) {
 				userBean.setEmail(null);
 			}

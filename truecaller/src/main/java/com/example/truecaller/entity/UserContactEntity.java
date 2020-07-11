@@ -38,7 +38,7 @@ public class UserContactEntity implements Serializable, UserContactEntityConstan
 	private Integer isContact;
 
 	@Column(name = UserContactEntityConstant.FLAG)
-	private Integer flag;
+	private Integer flag = 1;
 
 	public Long getId() {
 		return id;
